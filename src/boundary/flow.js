@@ -1,21 +1,52 @@
-module.exports = mainFlow = (symbols, rules, market) => {
+const ruleRouter = require('../rules/rule_router');
 
-    symbols.forEach(symbol => {
+module.exports = mainFlow = (symbols, rules, markets) => {
 
-        // Verify if symbol is available for data processing
-        // Available if {status: active} and {retry: > 0}
-        if (symbol.status === 'active' && symbol.retry > 0) {
+    try {
+        symbols.forEach(symbol => {
 
-            // Verify if Rule and MArket are available for data processing too
+            // Verify if symbol is available for data processing
+            // True if {status: active} and {retry: > 0}
+            if (symbol.status === 'active' && symbol.retry > 0) {
 
+                // Verify if Rule and Market are available for data processing too
+                const m = checkObjectStatus(markets, symbol.market);
+                const r = checkObjectStatus(rules, symbol.rule);
+                if (m.status && r.status) {
 
-        }
-    });
-
-    // execute specific rule for each pairs
-
-    // send notification of needed
-
-    // decrease retry parameter (send updated data to ct-config micro-service)
-
+                    ruleRouter(symbol, r.name, m.name).then((data) => {
+                        // Execute rule logic and return object data needed for notification
+                        console.log(data);
+                        // Decrease retry parameter (send updated data to ct-config micro-service)
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                }
+                else {
+                    throw new Error('Market status and Rule status have to have "active" status');
+                }
+            }
+        });
+    } catch (error) {
+        throw new Error('Error occured while execution mainFlow: ', error);
+    }
 };
+
+function checkObjectStatus(objects, id) {
+    let result = {
+        'name': undefined,
+        'status': new Boolean(false)
+    };
+    try {
+        objects.forEach(obj => {
+            if (obj._id === id) {
+                result.name = obj.name
+                result.status = obj.status === 'active' ? true : false;
+                return;
+            }
+        });
+        return result;
+    } catch (error) {
+        throw new Error('Error occured while verifying Object status: ', error);
+    }
+}

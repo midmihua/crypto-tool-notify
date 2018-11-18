@@ -11,13 +11,13 @@ const mainFlow = require('./boundary/flow');
     try {
 
         // Get Market related data
-        let market = await config.getMarkets();
+        let markets = await config.getMarkets();
         // Get Rule related data
         let rules = await config.getRules();
         // Get Symbol related data
         let symbols = await config.getSymbols();
         // Start main flow
-        mainFlow(symbols, rules, market);
+        mainFlow(symbols, rules, markets);
 
     } catch (error) {
         console.log(error);
