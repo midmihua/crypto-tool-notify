@@ -2,28 +2,22 @@ const RequestBinanceData = require('../markets/binance');
 
 const binance = new RequestBinanceData();
 
-module.exports = targetPrice = async (symbol, market) => {
+module.exports = targetPrice = async (rule) => {
     let result = {
         status: new Boolean(false),
         target: undefined,
         current: undefined
     };
     try {
-        // console.log('symbol: ', symbol.symbol);
-        // console.log('market: ', market);
-        // console.log('params: ', symbol.params);
-        if (market === 'binance') {
-            let params = paramsToJsonObject(symbol.params);
-            let current = await binance.price(symbol.symbol);
+        if (rule.params.market.toLowerCase() === 'binance') {
 
-            result.current = current.price;
-            result.target = params.target_price;
+            result.current = await binance.price(rule.params.symbol);
+            result.target = rule.params.targetPrice;
 
-            if (params.direction === '>=' || params.direction === '>') {
-                result.status = current.price >= params.target_price ? true : false;
-            } else if (params.direction === '<=' || params.direction === '<') {
-                result.status = current.price <= params.target_price ? true : false;
-            }
+            if (rule.params.direction === '>=')
+                result.status = result.current.price >= result.target ? true : false;
+            else if (rule.params.direction === '<=')
+                result.status = result.current.price <= result.target ? true : false;
         }
         else {
             throw new Error(`Non-implemented market is used: ${market}`);
@@ -33,11 +27,3 @@ module.exports = targetPrice = async (symbol, market) => {
         throw new Error('Error occured while execution targetPrice rule: ', error);
     }
 };
-
-function paramsToJsonObject(params) {
-    let jsonObject = {};
-    params.forEach(element => {
-        jsonObject[element.param] = element.value;
-    });
-    return jsonObject;
-}

@@ -1,18 +1,18 @@
 const targetPrice = require('./target_price');
 
-module.exports = ruleRouter = async (symbol, ruleName, marketName) => {
+module.exports = ruleRouter = async (rule) => {
     let ruleExec = undefined;
     try {
         // If a rule is not specified for a some reason
-        if (ruleName === undefined || marketName === undefined)
-            throw new Error(`Rule and/or Market is not specified for the ${symbol.symbol}`);
+        if (rule.name === undefined || rule.params.market === undefined)
+            throw new Error(`Rule and/or Market are not specified for the record: ${rule}`);
 
-        // Rule: target_price
-        if (ruleName === 'target_price') {
-            ruleExec = await targetPrice(symbol, marketName);
+        // Rule 1: target_price
+        if (rule.name === 'target_price') {
+            ruleExec = await targetPrice(rule);
         }
-        // Rule: pump_dump
-        else if (ruleName === 'pump_dump') {
+        // Rule 2: pump_dump - TBD
+        else if (rule.name === 'pump_dump') {
             console.log('pump_dump: TBD');
         }
         return ruleExec;

@@ -39,6 +39,7 @@ class RequestBinanceData {
         try {
             const url = (symbol !== undefined) ?
                 `${this.url}/api/v3/ticker/price?symbol=${symbol}` : `${this.url}/api/v3/ticker/price`;
+            console.log('GET /api/v3/ticker/price at: ', Date.now()); // Debug purpose
             const response = await request(url);
             return JSON.parse(response);
         } catch (error) {
@@ -101,7 +102,6 @@ class RequestBinanceData {
             const url = (startTime !== undefined) ?
                 `${this.url}/api/v1/klines?symbol=${symbol}&interval=${interval}&startTime=${startTime}` :
                 `${this.url}/api/v1/klines?symbol=${symbol}&interval=${interval}`;
-            console.log(url);
             const response = await request(url);
             return JSON.parse(response);
         } catch (error) {
