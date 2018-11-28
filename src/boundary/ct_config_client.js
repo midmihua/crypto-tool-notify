@@ -14,7 +14,24 @@ class RequestConfigData {
             const response = await request(url);
             return JSON.parse(response);
         } catch (error) {
-            throw new Error('Impossible to request Market related data');
+            throw new Error('Impossible to request --getTargetPriceRuleRecords-- related data');
+        }
+    }
+
+    async updateTargetPriceRuleRecords(id, putData) {
+        try {
+            const url = `${this.url}/api/targetprice/put/${id}`
+            const response = await request({
+                uri: url,
+                body: JSON.stringify(putData),
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            return JSON.parse(response);
+        } catch (error) {
+            throw new Error('Impossible to update --getTargetPriceRuleRecords-- related data');
         }
     }
 
