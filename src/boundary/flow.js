@@ -16,7 +16,7 @@ const targetPriceRuleFlow = (targetPriceRuleList, currentPrices) => {
                     // Execute the rule logic and get necessary data to notify the user
                     let ruleResults = targetPrice(rule, currPrice);
                     // Send message if ruleResults.status === true
-                    if (ruleResults.status !== true) {
+                    if (ruleResults.status === true) {
                         sendMsg(ruleResults);
                         // Decrease retry value
                         const putData = { ...rule.params };
