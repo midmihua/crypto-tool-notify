@@ -14,9 +14,9 @@ module.exports = targetPrice = (rule, currPrice) => {
             result.direction = rule.params.direction;
             result.target = rule.params.targetPrice;
             if (rule.params.direction === '>=')
-                result.status = result.current.price >= result.target ? true : false;
+                result.status = result.current >= result.target ? true : false;
             else if (rule.params.direction === '<=')
-                result.status = result.current.price <= result.target ? true : false;
+                result.status = result.current <= result.target ? true : false;
         }
         else {
             throw new Error(`Non-implemented market is used: ${market}`);
