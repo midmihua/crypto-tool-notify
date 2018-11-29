@@ -11,7 +11,7 @@ const targetPriceRuleFlow = (targetPriceRuleList, currentPrices) => {
             // Verify if a rule record is available for data processing
             // True if {status: A} and {retry: > 0}
             if (rule.status === 'A' && rule.params.retry > 0) {
-                let currPrice = getValueByKey(currentPrices, rule.params.symbol);
+                let currPrice = getValueByKey(currentPrices, rule.params.symbol.replace('_', ''));
                 if (currPrice !== undefined) {
                     // Execute the rule logic and get necessary data to notify the user
                     let ruleResults = targetPrice(rule, currPrice);
