@@ -1,11 +1,13 @@
 module.exports = targetPrice = (rule, currPrice) => {
     let result = {
-        status: new Boolean(false),
-        rule: 'target_price',
+        status: false,
+        rule: 'TARGET_PRICE',
         symbol: undefined,
         target: undefined,
+        current: undefined,
+        position: undefined,
         direction: undefined,
-        current: undefined
+        profit: undefined
     };
     try {
         if (rule.params.market.toLowerCase() === 'binance') {
@@ -13,10 +15,18 @@ module.exports = targetPrice = (rule, currPrice) => {
             result.current = currPrice;
             result.direction = rule.params.direction;
             result.target = rule.params.targetPrice;
+            // Calculate main status
             if (rule.params.direction === '>=')
                 result.status = result.current >= result.target ? true : false;
             else if (rule.params.direction === '<=')
                 result.status = result.current <= result.target ? true : false;
+            // If status true, calculate profit
+            if (result.status) {
+                if (rule.params.positionPrice > 0) {
+                    result.position = rule.params.positionPrice;
+                    result.profit = Number.parseFloat((result.current / result.position) * 100 - 100).toFixed(2);
+                }
+            }
         }
         else {
             throw new Error(`Non-implemented market is used: ${market}`);

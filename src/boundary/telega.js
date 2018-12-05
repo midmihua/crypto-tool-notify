@@ -9,7 +9,11 @@ const sendMsg = (income, sendTo) => {
     const chat = sendTo.chatId;
     try {
         if (token.length > 0 && chat.length > 0) {
-            msg = `RULE: ${income.rule}\nPAIR: ${income.symbol}\nActual: ${income.current} ${income.direction} Expected: ${income.target}\nhttps://www.binance.com/en/trade/pro/${income.symbol}`
+            let base = income.symbol.split('_')[1] ? income.symbol.split('_')[1] : '';
+            if (income.position !== undefined && income.profit !== undefined)
+                msg = `Rule: ${income.rule}\nPair: ${income.symbol}\nPosition Price: ${income.position} ${base}\nActual Price: ${income.current} ${base} ${income.direction} Expected Price: ${income.target} ${base}\nCurrent Profit: ${income.profit}%`
+            else
+                msg = `Rule: ${income.rule}\nPair: ${income.symbol}\nActual Price: ${income.current} ${base} ${income.direction} Expected Price: ${income.target} ${base}`
             new TelegramBot(token).sendMessage(chat, msg);
         }
     } catch (error) {

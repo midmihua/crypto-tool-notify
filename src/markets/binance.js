@@ -9,7 +9,7 @@ class RequestBinanceData {
     async time() {
         try {
             const response = await request(`${this.url}/api/v1/time`);
-            console.log(new Date().toString()); // debug
+            console.log('time: ', new Date().toString()); // debug
             return JSON.parse(response);
         } catch (error) {
             throw new Error('Impossible to request Binance time');
@@ -19,7 +19,7 @@ class RequestBinanceData {
     async ping() {
         try {
             const response = await request(`${this.url}/api/v1/ping`);
-            console.log(new Date().toString()); // debug
+            console.log('ping: ', new Date().toString()); // debug
             return JSON.parse(response);
         } catch (error) {
             throw new Error('Impossible to ping Binance');
@@ -31,7 +31,7 @@ class RequestBinanceData {
             if (symbol === undefined)
                 throw new Error('Symbol is not provided');
             const response = await request(`${this.url}/api/v3/avgPrice?symbol=${symbol}`);
-            console.log(new Date().toString()); // debug
+            console.log('avgPrice: ', new Date().toString()); // debug
             return JSON.parse(response);
         } catch (error) {
             throw new Error('Impossible to get avgPrice data');
@@ -43,7 +43,7 @@ class RequestBinanceData {
             const url = (symbol !== undefined) ?
                 `${this.url}/api/v3/ticker/price?symbol=${symbol}` : `${this.url}/api/v3/ticker/price`;
             const response = await request(url);
-            console.log(new Date().toString()); // debug
+            console.log('price: ', new Date().toString()); // debug
             return JSON.parse(response);
         } catch (error) {
             throw new Error('Impossible to get price data');
@@ -76,7 +76,7 @@ class RequestBinanceData {
             const url = (symbol !== undefined) ?
                 `${this.url}/api/v1/ticker/24hr?symbol=${symbol}` : `${this.url}/api/v1/ticker/24hr`;
             const response = await request(url);
-            console.log(new Date().toString()); // debug
+            console.log('statistics24hr: ', new Date().toString()); // debug
             return JSON.parse(response);
         } catch (error) {
             throw new Error('Impossible to get statistics24hr');
@@ -107,7 +107,7 @@ class RequestBinanceData {
                 `${this.url}/api/v1/klines?symbol=${symbol}&interval=${interval}&startTime=${startTime}` :
                 `${this.url}/api/v1/klines?symbol=${symbol}&interval=${interval}`;
             const response = await request(url);
-            console.log(new Date().toString()); // debug
+            console.log('candlestick: ', new Date().toString()); // debug
             return JSON.parse(response);
         } catch (error) {
             throw new Error('Impossible to get candlestick data');
