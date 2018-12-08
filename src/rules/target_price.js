@@ -15,6 +15,7 @@ module.exports = targetPrice = (rule, currPrice) => {
             result.current = currPrice;
             result.direction = rule.params.direction;
             result.target = rule.params.targetPrice;
+            result.description = rule.params.description;
             // Calculate main status
             if (rule.params.direction === '>=')
                 result.status = result.current >= result.target ? true : false;
@@ -26,6 +27,7 @@ module.exports = targetPrice = (rule, currPrice) => {
                     result.position = rule.params.positionPrice;
                     result.profit = Number.parseFloat((result.current / result.position) * 100 - 100).toFixed(2);
                 }
+                
             }
         }
         else {
