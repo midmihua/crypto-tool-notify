@@ -8,25 +8,29 @@ const config = new RequestConfigData(process.env.CRYPTO_TOOL_CONFIG_URL);
 const targetPriceRuleFlow = (targetPriceRuleList, currentPrices) => {
     try {
         targetPriceRuleList.forEach(rule => {
-            // Verify if a rule record is available for data processing
-            // True if {status: A} and {retry: > 0}
-            if (rule.status === 'A' && rule.params.retry > 0) {
+            // Execute the process only if status === A
+            if (rule.status === 'A') {
+                // Get current price value
                 let currPrice = getValueByKey(currentPrices, rule.params.symbol.replace('_', ''));
                 if (currPrice !== undefined) {
                     // Execute the rule logic and get necessary data to notify the user
                     let ruleResults = targetPrice(rule, currPrice);
-                    // Send message if ruleResults.status === true
-                    if (ruleResults.status === true) {
+                    // Send message if ruleResults.status === true and retry > 0
+                    if (ruleResults.status === true && rule.params.retry > 0) {
                         sendMsg(ruleResults, rule.sendTo);
                         // Decrease retry value
                         const putData = { ...rule.params };
                         set(putData, 'retry', putData.retry - 1);
                         // Put data to update the rule params
-                        // console.log({ "params": putData });
+                        config.updateTargetPriceRuleRecords(rule._id, { "params": putData });
+                    } else if (ruleResults.status === false && rule.params.retry <= 0) {
+                        // Increase retry value
+                        const putData = { ...rule.params };
+                        set(putData, 'retry', putData.retry + 1);
+                        // Put data to update the rule params
                         config.updateTargetPriceRuleRecords(rule._id, { "params": putData });
                     }
-                }
-                else {
+                } else {
                     throw new Error(`Price data for ${rule.params.symbol} was not found`);
                 }
             }

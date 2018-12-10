@@ -14,34 +14,17 @@ const main = (async () => {
         // RULE-1: targetPriceRule flow
         // Get list of configured rules
         let targetPriceRuleList = await config.getTargetPriceRuleRecords();
-        // Verify if start flow needed
-        if (shouldRun(targetPriceRuleList)) {
+        // Start process if rules list is not empty
+        if (targetPriceRuleList.length > 0) {
             // Get actual prices from binance for all pairs
             let currentPrices = await binance.price();
-            // Start the flow
+            // Start the targetPriceRule flow
             targetPriceRuleFlow(targetPriceRuleList, currentPrices);
         }
     } catch (error) {
         console.log(error);
     }
 });
-
-function shouldRun(ruleList) {
-    try {
-        let retries = 0;
-        if (ruleList.length > 0) {
-            ruleList.forEach(element => {
-                retries += element.params.retry;
-            });
-        }
-        if (retries > 0)
-            return true;
-        else
-            return false;
-    } catch (error) {
-        return false;
-    }
-}
 
 // Setup and start cron job
 const job = new CronJob(`*/${process.env.CRON_EXEC_INTERVAL} * * * * *`, function () {
